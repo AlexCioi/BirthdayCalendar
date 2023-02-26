@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+    <div class="container h-100 w-25 col m-auto mt-5">
+        <h4 class="row">Please sign up</h4>
+        <div class="form-control row">
+            {{ form_start(form) }}
+            <div class="row">
+                <div>
+                    {{ form_row(form.email)}}
+                </div>
+                <div>
+                    {{ form_row(form.password) }}
+                </div>
+                <div>
+                    {{ form_row(form.phone_number) }}
+                </div>
+                <div>
+                    {{ form_row(form.SignUp) }}
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {{ dump(email) }}
+{% endblock %}

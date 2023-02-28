@@ -1,0 +1,36 @@
+{% extends 'authenticated.html.twig' %}
+
+{% block title %}EventList{% endblock %}
+
+{% block body %}
+   <div class="mx-5">
+      <div class="row">
+         <div class="col-2 border border-secondary">
+             {{ user }}
+             <a href="dashboard/events/add_event"></a>
+         </div>
+         <div class="col-10 border border-secondary" >
+            {% if isEmpty %}
+               <div class="text-center">
+                   <h4>Not to worry! Seems like you don't have any upcoming events!</h4> <br> <br>
+               </div>
+            {% endif %}
+
+            {% for event in events %}
+               <div class="row flex-grow-1">
+                  <div class="card mb-2">
+                      <div class="card-header">
+                          <h5 class="my-2 ms-2"> {{ event.getName() }} </h5>
+                      </div>
+                      <div class="card-body ms-2">
+                          <h5 class="card-title"> {{ event.getDueDate() | date("d/m/Y") }} </h5>
+                          <p class="card-text"> {{ event.getDescription() }} </p>
+                      </div>
+                  </div>
+               </div>
+            {% endfor %}
+         </div>
+      </div>
+   </div>
+
+{% endblock %}

@@ -2,7 +2,17 @@
 
 {% block title %}EventList{% endblock %}
 
+{% block header %}
+    <a href="/dashboard" class="d-flex text-decoration-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        <h5 class="mt-1">Back</h5>
+    </a>
+{% endblock %}
+
 {% block body %}
+
     <div class="mx-5">
         <div class="row">
             <div class="col-2 border border-secondary">
@@ -19,24 +29,39 @@
                 </div>
             </div>
             <div class="col-10 border border-secondary" >
-                {% if isEmpty %}
-                    <div class="text-center">
-                        <h4 class="mt-5">Not to worry! Seems like you don't have any upcoming events!</h4> <br> <br>
-                    </div>
-                {% endif %}
-                {% for event in events %}
-                    <div class="row flex-grow-1">
-                        <div class="card mb-2">
-                            <div class="card-header">
-                                <h5 class="my-2 ms-2"> {{ event.getName() }} </h5>
-                            </div>
-                            <div class="card-body ms-2">
-                                <h5 class="card-title"> {{ event.getDueDate() | date("d/m/Y") }} </h5>
-                                <p class="card-text"> {{ event.getDescription() }} </p>
+                <div class="mt-2">
+                    {% if isEmpty %}
+                        <div class="text-center">
+                            <h4 class="mt-5">Not to worry! Seems like you don't have any upcoming events!</h4> <br> <br>
+                        </div>
+                    {% endif %}
+                    {% for event in events %}
+                        <div class="row flex-grow-1">
+                            <div class="card mb-2">
+                                <div class="card-header">
+                                    <h5 class="my-2 ms-2"> {{ event.getName() }} </h5>
+                                </div>
+                                <div class="card-body ms-2">
+                                    <h5 class="card-title"> {{ event.getDueDate() | date("d/m/Y") }} </h5>
+                                    <p class="card-text"> {{ event.getDescription() }} </p>
+                                    <a href="/dashboard/events/edit/{{ event.getId() }}" class="text-decoration-none font-weight-bold">
+                                        Edit
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen mb-1" viewBox="0 0 16 16">
+                                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="/dashboard/events/{{ event.getId() }}/delete" class="btn text-danger ms-2 mb-1"
+                                       onclick="return confirm('Are you sure you want to delete this entity?')">
+                                        Remove
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3 mb-1" viewBox="0 0 16 16">
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

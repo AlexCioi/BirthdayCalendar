@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Form\EventCreateFormType;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,19 +18,6 @@ class EventController extends AbstractController
     {
         $entityManager = $doctrine->getManager();
         $user = $this->getUser()->getUserIdentifier();
-
-        /**
-        $eventExample = new Event();
-        $eventExample->setName('Larisa Barbu');
-        $eventExample->setUser($user);
-        $date = new \DateTimeImmutable('2023-03-13');
-        $eventExample->setDueDate($date);
-
-        $eventExample->setDescription('Urmeaza ziua sotiei lui Florin Barbu');
-
-        $entityManager->persist($eventExample);
-        $entityManager->flush();
-        */
 
         $events = $doctrine->getRepository(Event::class)->getAllUserEvents($user);
 
@@ -41,5 +31,43 @@ class EventController extends AbstractController
             'events' => $events,
             'isEmpty' => $isEmpty
         ]);
+    }
+
+    #[Route('/dashboard/events/edit/{id}', name: 'event_edit')]
+    public function update(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        $entityManager = $doctrine->getManager();
+        $event = $entityManager->getRepository(Event::class)->find($id);
+
+        $form = $this->createForm(EventCreateFormType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+
+            $event->setName($formData->getName());
+            $event->setDueDate($formData->getDueDate());
+            $event->setDescription($formData->getDescription());
+
+            $entityManager->flush();
+        }
+
+        $eventType = 'editor';
+
+        return $this->render('event_creator/index.html.twig', [
+            'form' => $form,
+            'eventType' => $eventType
+        ]);
+    }
+
+    #[Route('/dashboard/events/{id}/delete', name: 'event_delete')]
+    public function delete(Event $event, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $entityManager->remove($event);
+        $entityManager->flush();
+
+        $referer = $request->headers->get('referer');
+
+        return $this->redirectToRoute($referer);
     }
 }

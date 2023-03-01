@@ -35,9 +35,12 @@ class EventCreatorController extends AbstractController
             $event = new Event();
         }
 
+        $eventType = 'creator';
+
         return $this->render('event_creator/index.html.twig', [
             'controller_name' => 'EventCreatorController',
-            'form' => $form
+            'form' => $form,
+            'eventType' => $eventType
         ]);
     }
 }

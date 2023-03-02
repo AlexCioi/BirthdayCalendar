@@ -66,8 +66,6 @@ class EventController extends AbstractController
         $entityManager->remove($event);
         $entityManager->flush();
 
-        $referer = $request->headers->get('referer');
-
-        return $this->redirectToRoute($referer);
+        return $this->redirectToRoute('app_event');
     }
 }

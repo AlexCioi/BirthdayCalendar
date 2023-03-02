@@ -50,6 +50,8 @@ class EventController extends AbstractController
             $event->setDescription($formData->getDescription());
 
             $entityManager->flush();
+
+            return $this->redirectToRoute('app_event');
         }
 
         $eventType = 'editor';

@@ -32,7 +32,7 @@ class EventCreatorController extends AbstractController
             $entityManager->persist($event);
             $entityManager->flush();
 
-            $event = new Event();
+            return $this->redirectToRoute('app_event');
         }
 
         $eventType = 'creator';

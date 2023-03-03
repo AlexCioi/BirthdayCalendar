@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class EventCreateFormType extends AbstractType
+class EventFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -23,7 +23,9 @@ class EventCreateFormType extends AbstractType
                     'placeholder' => 'Name of the special person you are going to celebrate...'
                 ]
             ])
-            ->add('dueDate', DateType::class)
+            ->add('dueDate', DateType::class, array(
+                'years' => range(date('Y'), date('Y') + 10),
+            ))
             ->add('description', TextareaType::class,[
                 'constraints' => [
                     new NotBlank([

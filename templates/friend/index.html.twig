@@ -45,8 +45,10 @@
                             </div>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item"> Birth date: {{ friend.getBirthDate() | date('Y-m-d') }} </li>
-                                <li class="list-group-item"> {{ friend.getPhoneNumber() }} </li>
-                                <li class="list-group-item"> {{ friend.getEmail() }} </li>
+                                {% if friend.getPhoneNumber() %}
+                                    <li class="list-group-item "> {{ friend.getPhoneNumber() }} </li>
+                                {% endif %}
+                                <li class="list-group-item container"> {{ friend.getEmail() }} </li>
                             </ul>
                             <div class="card-body">
                                 <a href="/dashboard/friends/{{ friend.getId() }}/edit" class="text-decoration-none font-weight-bold ms-3">

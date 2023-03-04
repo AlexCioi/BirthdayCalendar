@@ -20,7 +20,7 @@ class EventFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Name of the special person you are going to celebrate...'
+                    'placeholder' => 'Event name'
                 ]
             ])
             ->add('dueDate', DateType::class, array(
@@ -33,7 +33,7 @@ class EventFormType extends AbstractType
                     ])
                 ],
                 'attr' => [
-                    'placeholder' => 'Gift ideas,  something to remember later...'
+                    'placeholder' => 'Something to remember later...'
                 ]
             ])
             ->add('create', SubmitType::class, [

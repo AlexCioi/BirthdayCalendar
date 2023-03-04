@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Friend;
 use App\Form\EventFormType;
+use App\Helpers\CustomSorter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,18 +20,54 @@ class EventController extends AbstractController
     {
         $entityManager = $doctrine->getManager();
         $user = $this->getUser()->getUserIdentifier();
+        $sorter = new CustomSorter();
 
         $events = $doctrine->getRepository(Event::class)->getAllUserEvents($user);
+        $friends = $doctrine->getRepository(Friend::class)->getAllUserFriends($user);
 
-        $isEmpty = 0;
+        $localTime = new \DateTime('now');
+        $year = $localTime->format('Y');
+
+        foreach ($friends as $friend) {
+            $birthday = $friend->getBirthDate();
+            date_date_set($birthday, intval($year), date_format($birthday, 'm'), date_format($birthday, 'd'));
+        }
+
+        foreach ($friends as $friend) {
+            if ($localTime > $friend->getBirthDate()) {
+                array_shift($friends);
+            }
+        }
+
+        $adapter = [];
+        foreach ($friends as $friend) {
+            $friendEvent = new Event();
+            $friendEvent->setUser($friend->getId());
+            $friendEvent->setName($friend->getFirstName().' '.$friend->getLastName()."'s birthday!");
+            $friendEvent->setDescription(null);
+            $friendEvent->setDueDate($friend->getBirthDate());
+            $adapter[] = $friendEvent;
+        }
+        $all = array_merge($events, $adapter);
+        $all = $sorter->sortEventsByDate($all);
+
+        $isEmptyEvents = 0;
         if (count($events) == 0) {
-            $isEmpty = 1;
+            $isEmptyEvents = 1;
+        }
+
+        $isEmptyFriends = 0;
+        if (count($friends) == 0) {
+            $isEmptyFriends = 1;
         }
 
         return $this->render('event/index.html.twig', [
             'user' => $user,
             'events' => $events,
-            'isEmpty' => $isEmpty
+            'friends' => $friends,
+            'all' => $all,
+            'isEmptyEvents' => $isEmptyEvents,
+            'isEmptyBirthdays' => $isEmptyFriends
         ]);
     }
 

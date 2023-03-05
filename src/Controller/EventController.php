@@ -48,6 +48,7 @@ class EventController extends AbstractController
             $friendEvent->setDueDate($friend->getBirthDate());
             $adapter[] = $friendEvent;
         }
+
         $all = array_merge($events, $adapter);
         $all = $sorter->sortEventsByDate($all);
 

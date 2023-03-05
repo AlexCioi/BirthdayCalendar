@@ -32,11 +32,14 @@ class FriendFormType extends AbstractType
             ->add('birthDate', DateType::class, array(
                 'years' => range(date('1940'), date('Y')),
             ))
-            ->add('phoneNumber', TelType::class)
+            ->add('phoneNumber', TelType::class, [
+                'required' => false
+            ])
             ->add('email', EmailType::class, [
                 'attr' => [
                     'placeholder' => 'friend@example.com'
-                ]
+                ],
+                'required' => false
             ])
             ->add('create', SubmitType::class, [
                 'label' => 'Register friend',

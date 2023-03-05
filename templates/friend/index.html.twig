@@ -47,8 +47,15 @@
                                 <li class="list-group-item"> Birth date: {{ friend.getBirthDate() | date('Y-m-d') }} </li>
                                 {% if friend.getPhoneNumber() %}
                                     <li class="list-group-item "> {{ friend.getPhoneNumber() }} </li>
+                                {% else %}
+                                    <li class="list-group-item text-secondary"> Phone number not set </li>
                                 {% endif %}
-                                <li class="list-group-item container"> {{ friend.getEmail() }} </li>
+
+                                {% if friend.getEmail() %}
+                                    <li class="list-group-item container"> {{ friend.getEmail() }} </li>
+                                {% else %}
+                                    <li class="list-group-item text-secondary"> Email not set </li>
+                                {% endif %}
                             </ul>
                             <div class="card-body">
                                 <a href="/dashboard/friends/{{ friend.getId() }}/edit" class="text-decoration-none font-weight-bold ms-3">

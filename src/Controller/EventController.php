@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\Friend;
 use App\Form\EventFormType;
-use App\Helpers\CustomSorter;
+use App\Helpers\EventFetcher;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,38 +19,20 @@ class EventController extends AbstractController
     public function index(ManagerRegistry $doctrine): Response
     {
         $entityManager = $doctrine->getManager();
+        $eventFetcher = new EventFetcher();
         $user = $this->getUser()->getUserIdentifier();
-        $sorter = new CustomSorter();
 
-        $events = $doctrine->getRepository(Event::class)->getAllUserEvents($user);
-        $friends = $doctrine->getRepository(Friend::class)->getAllUserFriends($user);
+        $repo = $doctrine->getRepository(Event::class);
+        $qb = $repo->getQb();
+        $repo->getAllUserEvents($qb, $user);
+        $events = $qb->getQuery()->getResult();
 
-        $localTime = new \DateTime('now');
-        $year = $localTime->format('Y');
+        $repo = $doctrine->getRepository(Friend::class);
+        $qb = $repo->getQb();
+        $repo->getAllUserFriends($qb, $user);
+        $friends = $qb->getQuery()->getResult();
 
-        foreach ($friends as $friend) {
-            $birthday = $friend->getBirthDate();
-            date_date_set($birthday, intval($year), date_format($birthday, 'm'), date_format($birthday, 'd'));
-        }
-
-        foreach ($friends as $friend) {
-            if ($localTime > $friend->getBirthDate()) {
-                array_shift($friends);
-            }
-        }
-
-        $adapter = [];
-        foreach ($friends as $friend) {
-            $friendEvent = new Event();
-            $friendEvent->setUser($friend->getId());
-            $friendEvent->setName($friend->getFirstName().' '.$friend->getLastName()."'s birthday!");
-            $friendEvent->setDescription(null);
-            $friendEvent->setDueDate($friend->getBirthDate());
-            $adapter[] = $friendEvent;
-        }
-
-        $all = array_merge($events, $adapter);
-        $all = $sorter->sortEventsByDate($all);
+        $all = $eventFetcher->fetchAllEvents($doctrine, $user);
 
         $isEmptyEvents = 0;
         if (count($events) == 0) {

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Friend;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FriendRepository extends ServiceEntityRepository
 {
+    public function getQb()
+    {
+        return $this->createQueryBuilder('friend');
+    }
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Friend::class);
@@ -39,18 +45,16 @@ class FriendRepository extends ServiceEntityRepository
         }
     }
 
-    public function getAllUserFriends($user): array
+    public function getAllUserFriends(QueryBuilder $qb, $user): self
     {
-        $entityManager = $this->getEntityManager();
+        $qb
+            ->where('friend.user = :user')
+            ->orderBy('friend.birthDate', 'ASC')
+            ->setParameters([
+                'user' => $user
+            ]);
 
-        $query = $entityManager->createQuery(
-            'SELECT friend
-            FROM App\Entity\Friend friend
-            WHERE friend.user = :user
-            ORDER BY friend.birthDate'
-        )->setParameter('user', $user);
-
-        return $query->getResult();
+        return $this;
     }
 
 //    /**

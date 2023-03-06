@@ -19,7 +19,10 @@ class FriendController extends AbstractController
         $entityManager = $doctrine->getManager();
         $user = $this->getUser()->getUserIdentifier();
 
-        $friends = $doctrine->getRepository(Friend::class)->getAllUserFriends($user);
+        $repo = $doctrine->getRepository(Friend::class);
+        $qb = $repo->getQb();
+        $repo->getAllUserFriends($qb, $user);
+        $friends = $qb->getQuery()->getResult();
 
         $isEmpty = 0;
         if (count($friends) == 0) {

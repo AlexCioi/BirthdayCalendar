@@ -4,6 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +19,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EventRepository extends ServiceEntityRepository
 {
+    public function getQb()
+    {
+        return $this->createQueryBuilder('e');
+    }
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
@@ -39,20 +47,45 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
-    public function getAllUserEvents($user): array
+    public function getAllUserEvents(QueryBuilder $qb, $user): self
     {
-        $entityManager = $this->getEntityManager();
+        $qb
+            ->where('e.user = :user')
+            ->orderBy('e.dueDate', 'ASC')
+            ->setParameters([
+                'user' => $user
+            ]);
 
-        $query = $entityManager->createQuery(
-            'SELECT event
-            FROM App\Entity\Event event
-            WHERE event.user = :user
-            ORDER BY event.dueDate'
-        )->setParameter('user', $user);
-
-        return $query->getResult();
+        return $this;
     }
 
+    public function getShortTermUserEvents(QueryBuilder $qb, $user): self
+    {
+        date_default_timezone_set('Europe/Bucharest');
+        $timezone = new \DateTimeZone(date_default_timezone_get());
+        $localTime = new \DateTime('now');
+        $localTime->setTimezone($timezone);
+        $localTime->setTime(0, 0 , 0);
+
+        $endTime = clone $localTime;
+        $endTime->add(new \DateInterval('P3D'));
+        $endTime->setTime(23,59,59);
+
+        $qb
+            ->where('e.user = :user')
+            ->andWhere($qb->expr()->andX(
+                $qb->expr()->gte('e.dueDate', ':localTime'),
+                $qb->expr()->lte('e.dueDate', ':endTime')
+            ))
+            ->orderBy('e.dueDate', 'ASC')
+            ->setParameters([
+                'localTime' => $localTime,
+                'endTime' => $endTime,
+                'user' => $user
+            ]);
+
+        return $this;
+    }
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */

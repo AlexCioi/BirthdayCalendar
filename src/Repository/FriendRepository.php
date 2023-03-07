@@ -57,6 +57,23 @@ class FriendRepository extends ServiceEntityRepository
         return $this;
     }
 
+    public function getNotificationBirthdays(QueryBuilder $qb): self
+    {
+        date_default_timezone_set('Europe/Bucharest');
+        $timezone = new \DateTimeZone(date_default_timezone_get());
+        $localTime = new \DateTime('now');
+        $localTime->setTimezone($timezone);
+        $localTime->setTime(0, 0 , 0);
+
+        $qb
+            ->where('friend.notification_date = :localTime')
+            ->setParameters([
+                'localTime' => $localTime
+            ]);
+
+        return $this;
+    }
+
 //    /**
 //     * @return Friend[] Returns an array of Friend objects
 //     */

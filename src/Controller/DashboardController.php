@@ -23,9 +23,14 @@ class DashboardController extends AbstractController
         $eventRepo->getShortTermUserEvents($qb, $user);
         $shortTermEvents = $qb->getQuery()->getResult();
 
+        $isEmptyEvents = 0;
+        if (count($shortTermEvents) === 0) {
+            $isEmptyEvents = 1;
+        }
 
         return $this->render('dashboard/index.html.twig', [
-            'events' => $shortTermEvents
+            'events' => $shortTermEvents,
+            'isEmptyEvents' => $isEmptyEvents
         ]);
     }
 }

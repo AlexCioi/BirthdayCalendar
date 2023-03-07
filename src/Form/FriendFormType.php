@@ -5,14 +5,18 @@ namespace App\Form;
 use App\Entity\Event;
 
 use App\Entity\Friend;
+
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Valid;
 
 class FriendFormType extends AbstractType
 {
@@ -40,6 +44,17 @@ class FriendFormType extends AbstractType
                     'placeholder' => 'friend@example.com'
                 ],
                 'required' => false
+            ])
+            ->add('checkBox', CheckboxType::class, [
+                'label' => 'Receive email notifications announcing their birthday?',
+                'required' => false,
+            ])
+            ->add('notificationOffset', IntegerType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => false,
+                'attr' => ['class' => 'notification-offset'],
+                'constraints' => [new Valid()]
             ])
             ->add('create', SubmitType::class, [
                 'label' => 'Register friend',

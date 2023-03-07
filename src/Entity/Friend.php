@@ -38,6 +38,8 @@ class Friend
     #[ORM\Column(nullable: true)]
     private ?int $notification_offset = null;
 
+    private $checkBox = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -136,5 +138,15 @@ class Friend
         $this->notification_offset = $notification_offset;
 
         return $this;
+    }
+
+    public function setCheckBox(bool $check)
+    {
+        $this->checkBox = $check;
+    }
+
+    public function getCheckBox(): bool
+    {
+        return $this->checkBox;
     }
 }

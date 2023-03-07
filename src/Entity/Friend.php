@@ -32,6 +32,12 @@ class Friend
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthDate = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $notification_date = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $notification_offset = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +110,30 @@ class Friend
     public function setBirthDate(\DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
+
+        return $this;
+    }
+
+    public function getNotificationDate(): ?\DateTimeInterface
+    {
+        return $this->notification_date;
+    }
+
+    public function setNotificationDate(?\DateTimeInterface $notification_date): self
+    {
+        $this->notification_date = $notification_date;
+
+        return $this;
+    }
+
+    public function getNotificationOffset(): ?int
+    {
+        return $this->notification_offset;
+    }
+
+    public function setNotificationOffset(?int $notification_offset): self
+    {
+        $this->notification_offset = $notification_offset;
 
         return $this;
     }

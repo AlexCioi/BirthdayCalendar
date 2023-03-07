@@ -49,11 +49,21 @@ class EventRepository extends ServiceEntityRepository
 
     public function getAllUserEvents(QueryBuilder $qb, $user): self
     {
+        date_default_timezone_set('Europe/Bucharest');
+        $timezone = new \DateTimeZone(date_default_timezone_get());
+        $localTime = new \DateTime('now');
+        $localTime->setTimezone($timezone);
+        $localTime->setTime(0, 0 , 0);
+
         $qb
             ->where('e.user = :user')
+            ->andWhere($qb->expr()->andX(
+                $qb->expr()->gte('e.dueDate', ':localTime'),
+            ))
             ->orderBy('e.dueDate', 'ASC')
             ->setParameters([
-                'user' => $user
+                'user' => $user,
+                'localTime' => $localTime
             ]);
 
         return $this;
@@ -86,6 +96,29 @@ class EventRepository extends ServiceEntityRepository
 
         return $this;
     }
+
+    public function getUserPastEvents(QueryBuilder $qb, $user): self
+    {
+        date_default_timezone_set('Europe/Bucharest');
+        $timezone = new \DateTimeZone(date_default_timezone_get());
+        $localTime = new \DateTime('now');
+        $localTime->setTimezone($timezone);
+        $localTime->setTime(0, 0 , 0);
+
+        $qb
+            ->where('e.user = :user')
+            ->andWhere($qb->expr()->andX(
+                $qb->expr()->lt('e.dueDate', ':localTime')
+            ))
+            ->orderBy('e.dueDate', 'ASC')
+            ->setParameters([
+                'localTime' => $localTime,
+                'user' => $user
+            ]);
+
+        return $this;
+    }
+
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */

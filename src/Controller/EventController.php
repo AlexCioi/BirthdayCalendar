@@ -27,6 +27,9 @@ class EventController extends AbstractController
         $repo->getAllUserEvents($qb, $user);
         $events = $qb->getQuery()->getResult();
 
+        $repo->getUserPastEvents($qb, $user);
+        $pastEvents = $qb->getQuery()->getResult();
+
         $repo = $doctrine->getRepository(Friend::class);
         $qb = $repo->getQb();
         $repo->getAllUserFriends($qb, $user);
@@ -44,12 +47,19 @@ class EventController extends AbstractController
             $isEmptyFriends = 1;
         }
 
+        $isEmptyPastEvents = 0;
+        if (count($pastEvents) == 0) {
+            $isEmptyPastEvents = 1;
+        }
+
         return $this->render('event/index.html.twig', [
             'user' => $user,
             'events' => $events,
             'friends' => $friends,
             'all' => $all,
+            'pastEvents' => $pastEvents,
             'isEmptyEvents' => $isEmptyEvents,
+            'isEmptyPastEvents' => $isEmptyPastEvents,
             'isEmptyBirthdays' => $isEmptyFriends
         ]);
     }

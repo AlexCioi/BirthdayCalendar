@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Friend;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,6 +12,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[AsCommand(
     name: 'BirthdayNotificationCommand',
@@ -18,14 +21,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class BirthdayNotificationCommand extends Command
 {
-    private $entityManager;
-    private $notificationEmailService;
+    private $mailer;
+    private $doctrine;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(MailerInterface $mailer, ManagerRegistry $doctrine)
     {
-        $this->entityManager = $entityManager;
-
         parent::__construct();
+        $this->mailer = $mailer;
+        $this->doctrine = $doctrine;
     }
 
     protected function configure(): void
@@ -38,12 +41,25 @@ class BirthdayNotificationCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $repo = $this->entityManager->getRepository(Friend::class);
+        $repo = $this->doctrine->getRepository(Friend::class);
         $qb = $repo->getQb();
-        $repo->get($qb);
+        $repo->getNotificationBirthdays($qb);
         $friends = $qb->getQuery()->getResult();
 
+        foreach ($friends as $friend) {
+            $message = (new Email())
+                ->from('alexandrucioi@icloud.com')
+                ->to($friend->getUser())
+                ->subject(sprintf("Reminder: ".$friend->getFirstName().' '.$friend->getLastName()."'s birthday is coming up on %s", $friend->getBirthDate()->format('d/m/Y')))
+                ->text('mail text');
+            echo (sprintf("Reminder: ".$friend->getFirstName().' '.$friend->getLastName()."'s birthday is coming up on %s", $friend->getBirthDate()->format('d/m/Y')));
 
+            try {
+                $this->mailer->send($message);
+            } catch (\Exception $e) {
+                echo 'Caught exception: '. $e->getMessage() ."\n";
+            }
+        }
 
         return Command::SUCCESS;
     }

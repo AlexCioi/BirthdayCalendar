@@ -20,7 +20,7 @@ final class Version20230307134141 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE friend ADD notification_date DATETIME DEFAULT NULL, ADD notification_offset INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE friend ADD notification_date DATE DEFAULT NULL, ADD notification_offset INT DEFAULT NULL');
     }
 
     public function down(Schema $schema): void

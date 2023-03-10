@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Friend;
 use App\Form\FriendFormType;
+use App\Helpers\NotificationDateCalculator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,6 +54,12 @@ class FriendController extends AbstractController
             $friend->setBirthDate($formData->getBirthDate());
             $friend->setPhoneNumber($formData->getPhoneNumber());
             $friend->setEmail($formData->getEmail());
+
+            if ($formData->getNotificationOffset() != NULL) {
+                $notificationCalculator = new NotificationDateCalculator();
+                $friend->setNotificationOffset($formData->getNotificationOffset());
+                $friend->setNotificationDate($notificationCalculator->notDateCalc($friend));
+            }
 
             $entityManager->flush();
 

@@ -30,6 +30,7 @@ class FriendCreatorController extends AbstractController
             $friend->setBirthDate($formData->getBirthDate());
             $friend->setPhoneNumber($formData->getPhoneNumber());
             $friend->setEmail($formData->getEmail());
+            $friend->setNotificationOffset($formData->getNotificationOffset());
 
             $entityManager->persist($friend);
             $entityManager->flush();

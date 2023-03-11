@@ -54,6 +54,10 @@ class BirthdayNotificationCommand extends Command
 
             try {
                 $this->mailer->send($message);
+                $friend->setNotificationDate($friend->getNotificationDate()->modify('+1 year'));
+
+                $entityManager = $this->doctrine->getManager();
+                $entityManager->flush();
             } catch (\Exception $e) {
                 echo 'Caught exception: '. $e->getMessage() ."\n";
             }

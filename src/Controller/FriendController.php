@@ -5,25 +5,42 @@ namespace App\Controller;
 use App\Entity\Friend;
 use App\Form\FriendFormType;
 use App\Helpers\NotificationDateCalculator;
+use App\Service\FriendManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\throwException;
 
 class FriendController extends AbstractController
 {
-    #[Route('/dashboard/friends', name: 'app_friends')]
-    public function read(ManagerRegistry $doctrine): Response
+    #[Route('/dashboard/friend/register', name: 'friend_register')]
+    public function create(Request $request, FriendManager $friendManager): Response
     {
-        $entityManager = $doctrine->getManager();
-        $user = $this->getUser()->getUserIdentifier();
+        $friend = new Friend();
 
-        $repo = $doctrine->getRepository(Friend::class);
-        $qb = $repo->getQb();
-        $repo->getAllUserFriends($qb, $user);
-        $friends = $qb->getQuery()->getResult();
+        $form = $this->createForm(FriendFormType::class, $friend);
+        $form->handleRequest($request);
+
+        if ($friendManager->processFriendForm($form, $this->getUser()->getUserIdentifier(), $friend, 'create')) {
+            return $this->redirectToRoute('app_friends');
+        }
+
+        $friendType = 'register';
+
+        return $this->render('friend_creator/index.html.twig', [
+            'form' => $form,
+            'friendType' => $friendType
+        ]);
+    }
+
+    #[Route('/dashboard/friends', name: 'app_friends')]
+    public function read(FriendManager $friendManager): Response
+    {
+        $user = $this->getUser()->getUserIdentifier();
+        $friends = $friendManager->getUserFriends($user);
 
         $isEmpty = 0;
         if (count($friends) == 0) {
@@ -38,7 +55,7 @@ class FriendController extends AbstractController
     }
 
     #[Route('/dashboard/friends/{id}/edit', name: 'friend_edit')]
-    public function update(Request $request, ManagerRegistry $doctrine, int $id): Response
+    public function update(Request $request, ManagerRegistry $doctrine, FriendManager $friendManager, int $id): Response
     {
         $entityManager = $doctrine->getManager();
         $friend = $entityManager->getRepository(Friend::class)->find($id);
@@ -46,23 +63,7 @@ class FriendController extends AbstractController
         $form = $this->createForm(FriendFormType::class, $friend);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-
-            $friend->setFirstName($formData->getFirstName());
-            $friend->setLastName($formData->getLastName());
-            $friend->setBirthDate($formData->getBirthDate());
-            $friend->setPhoneNumber($formData->getPhoneNumber());
-            $friend->setEmail($formData->getEmail());
-
-            if ($formData->getNotificationOffset() != NULL) {
-                $notificationCalculator = new NotificationDateCalculator();
-                $friend->setNotificationOffset($formData->getNotificationOffset());
-                $friend->setNotificationDate($notificationCalculator->notDateCalc($friend));
-            }
-
-            $entityManager->flush();
-
+        if ($friendManager->processFriendForm($form, $this->getUser()->getUserIdentifier(), $friend, 'update')) {
             return $this->redirectToRoute('app_friends');
         }
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Friend;
+use App\Helpers\LocalTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -59,16 +60,33 @@ class FriendRepository extends ServiceEntityRepository
 
     public function getNotificationBirthdays(QueryBuilder $qb): self
     {
-        date_default_timezone_set('Europe/Bucharest');
-        $timezone = new \DateTimeZone(date_default_timezone_get());
-        $localTime = new \DateTime('now');
-        $localTime->setTimezone($timezone);
-        $localTime->setTime(0, 0 , 0);
+        $localTime = new LocalTime();
+        $localTime = $localTime->getLocalTime('');
 
         $qb
             ->where('friend.notification_date = :localTime')
             ->setParameters([
                 'localTime' => $localTime
+            ]);
+
+        return $this;
+    }
+
+    public function getUserUpcomingBirthdays(QueryBuilder $qb, $user): self
+    {
+        $localTime = new LocalTime();
+        $localTime = $localTime->getLocalTime('dateTime');
+
+        $qb
+            ->where('friend.user = :user')
+            ->andWhere($qb->expr()->andX(
+                $qb->expr()->lte('friend.notification_date', ':localTime'),
+                $qb->expr()->gte('friend.notification_date + friend.notification_offset', ':localTime')
+            ))
+            ->orderBy('friend.birthDate', 'ASC')
+            ->setParameters([
+                'localTime' => $localTime,
+                'user' => $user
             ]);
 
         return $this;

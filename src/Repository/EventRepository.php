@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Helpers\LocalTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
@@ -49,11 +50,8 @@ class EventRepository extends ServiceEntityRepository
 
     public function getAllUserEvents(QueryBuilder $qb, $user): self
     {
-        date_default_timezone_set('Europe/Bucharest');
-        $timezone = new \DateTimeZone(date_default_timezone_get());
-        $localTime = new \DateTime('now');
-        $localTime->setTimezone($timezone);
-        $localTime->setTime(0, 0 , 0);
+        $localTime = new LocalTime();
+        $localTime = $localTime->getLocalTime('');
 
         $qb
             ->where('e.user = :user')
@@ -71,11 +69,8 @@ class EventRepository extends ServiceEntityRepository
 
     public function getShortTermUserEvents(QueryBuilder $qb, $user): self
     {
-        date_default_timezone_set('Europe/Bucharest');
-        $timezone = new \DateTimeZone(date_default_timezone_get());
-        $localTime = new \DateTime('now');
-        $localTime->setTimezone($timezone);
-        $localTime->setTime(0, 0 , 0);
+        $localTime = new LocalTime();
+        $localTime = $localTime->getLocalTime('dateTime');
 
         $endTime = clone $localTime;
         $endTime->add(new \DateInterval('P3D'));

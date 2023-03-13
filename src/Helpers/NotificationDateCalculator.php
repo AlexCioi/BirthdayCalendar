@@ -8,7 +8,7 @@ class NotificationDateCalculator
 {
     public function notDateCalc(Friend $friend): \DateTimeInterface
     {
-        $birthday = $friend->getBirthDate();
+        $birthday = clone $friend->getBirthDate();
 
         date_default_timezone_set('Europe/Bucharest');
         $timezone = new \DateTimeZone(date_default_timezone_get());

@@ -6,7 +6,7 @@ use App\Entity\Event;
 
 class CustomSorter
 {
-    public function sortEventsByDate(array $array1)
+    public function sortEventsByDate(array $array1): ?array
     {
         usort($array1, fn(Event $x, Event $y) => $x->getDueDate() <=> $y->getDueDate());
 

@@ -83,7 +83,7 @@ class FriendRepository extends ServiceEntityRepository
                 $qb->expr()->lte('friend.notification_date', ':localTime'),
                 $qb->expr()->gte('friend.notification_date + friend.notification_offset', ':localTime')
             ))
-            ->orderBy('friend.birthDate', 'ASC')
+            ->orderBy('friend.birthDate', 'DESC')
             ->setParameters([
                 'localTime' => $localTime,
                 'user' => $user

@@ -61,7 +61,7 @@ class FriendRepository extends ServiceEntityRepository
     public function getNotificationBirthdays(QueryBuilder $qb): self
     {
         $localTime = new LocalTime();
-        $localTime = $localTime->getLocalTime('');
+        $localTime = $localTime->getLocalTime('dateTime');
 
         $qb
             ->where('friend.notification_date = :localTime')

@@ -43,9 +43,7 @@ class EventController extends AbstractController
 
         $upcomingEvents = $eventManager->getUserEvents($user, 'upcoming');
         $pastEvents = $eventManager->getUserEvents($user, 'past');
-
         $friends = $friendManager->getUpcomingBirthdays($user);
-
         $all = $eventManager->getUserEventsAndBirthdays($user);
 
         $isEmptyEvents = 0;

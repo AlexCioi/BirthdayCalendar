@@ -78,5 +78,4 @@ class EventManager
 
         return $sorter->sortEventsByDate(array_merge($events, $adapter));
     }
-
 }

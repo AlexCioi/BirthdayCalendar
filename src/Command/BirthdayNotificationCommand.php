@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Friend;
+use App\Helpers\LocalTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

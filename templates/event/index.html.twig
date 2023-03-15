@@ -52,7 +52,7 @@
                     <div class="ms-0 ps-0">
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="list-events" role="tabpanel" aria-labelledby="list-events-list">
-                                {% if isEmptyEvents %}
+                                {% if not isEmptyEvents %}
                                     <div class="text-center">
                                         <h4 class="mt-5">Not to worry! Seems like you don't have any upcoming events!</h4> <br> <br>
                                     </div>
@@ -94,7 +94,7 @@
                                 {% endfor %}
                             </div>
                             <div class="tab-pane fade" id="list-birthdays" role="tabpanel" aria-labelledby="list-birthdays-list">
-                                {% if isEmptyBirthdays %}
+                                {% if not isEmptyBirthdays %}
                                     <div class="text-center">
                                         <h4 class="mt-5">Not to worry! Seems like you don't have any upcoming birthdays!</h4> <br> <br>
                                     </div>
@@ -167,7 +167,7 @@
                                 {% endfor %}
                             </div>
                             <div class="tab-pane fade" id="list-pastEvents" role="tabpanel" aria-labelledby="list-pastEvents-list">
-                                {% if isEmptyPastEvents %}
+                                {% if not isEmptyPastEvents %}
                                     <div class="text-center">
                                         <h4 class="mt-5">Seems like you don't have any past events</h4> <br> <br>
                                     </div>

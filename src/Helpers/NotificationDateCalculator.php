@@ -10,11 +10,8 @@ class NotificationDateCalculator
     {
         $birthday = clone $friend->getBirthDate();
 
-        date_default_timezone_set('Europe/Bucharest');
-        $timezone = new \DateTimeZone(date_default_timezone_get());
-        $localTime = new \DateTime('now');
-        $localTime->setTimezone($timezone);
-        $localTime->setTime(0, 0 , 0);
+        $localTime = new LocalTime();
+        $localTime = $localTime->getLocalTime('dateTime');
 
         while ($localTime > $birthday) {
             $birthday->modify('+1 year');

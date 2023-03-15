@@ -50,14 +50,9 @@ class EventController extends AbstractController
         $friends = $friendManager->getUpcomingBirthdays($user);
         $all = $eventManager->getUserEventsAndBirthdays($user);
 
-        $isEmptyEvents = 0;
-        if (count($upcomingEvents) == 0) { $isEmptyEvents = 1; }
-
-        $isEmptyFriends = 0;
-        if (count($friends) == 0) { $isEmptyFriends = 1; }
-
-        $isEmptyPastEvents = 0;
-        if (count($pastEvents) == 0) { $isEmptyPastEvents = 1; }
+        $isEmptyEvents = count($upcomingEvents);
+        $isEmptyFriends = count($friends);
+        $isEmptyPastEvents = count($pastEvents);
 
         return $this->render('event/index.html.twig', [
             'user' => $user,

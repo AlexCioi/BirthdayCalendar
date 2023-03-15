@@ -94,11 +94,8 @@ class EventRepository extends ServiceEntityRepository
 
     public function getUserPastEvents(QueryBuilder $qb, $user): self
     {
-        date_default_timezone_set('Europe/Bucharest');
-        $timezone = new \DateTimeZone(date_default_timezone_get());
-        $localTime = new \DateTime('now');
-        $localTime->setTimezone($timezone);
-        $localTime->setTime(0, 0 , 0);
+        $localTime = new LocalTime();
+        $localTime = $localTime->getLocalTime('dateTime');
 
         $qb
             ->where('e.user = :user')

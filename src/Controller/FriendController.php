@@ -39,7 +39,12 @@ class FriendController extends AbstractController
     #[Route('/dashboard/friends', name: 'app_friends')]
     public function read(FriendManager $friendManager): Response
     {
-        $user = $this->getUser()->getUserIdentifier();
+        if ($this->getUser() !== NULL) {
+            $user = $this->getUser()->getUserIdentifier();
+        } else {
+            return $this->redirectToRoute('app_login');
+        }
+
         $friends = $friendManager->getUserFriends($user);
 
         $isEmpty = 0;

@@ -15,7 +15,11 @@ class DashboardController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $user = $this->getUser()->getUserIdentifier();
+        if ($this->getUser() !== NULL) {
+            $user = $this->getUser()->getUserIdentifier();
+        } else {
+            return $this->redirectToRoute('app_login');
+        }
 
 
         $eventRepo = $doctrine->getRepository(Event::class);

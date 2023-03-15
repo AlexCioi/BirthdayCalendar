@@ -39,7 +39,11 @@ class EventController extends AbstractController
     #[Route('/dashboard/events', name: 'app_event')]
     public function read(ManagerRegistry $doctrine, EventManager $eventManager, FriendManager $friendManager): Response
     {
-        $user = $this->getUser()->getUserIdentifier();
+        if ($this->getUser() !== NULL) {
+            $user = $this->getUser()->getUserIdentifier();
+        } else {
+            return $this->redirectToRoute('app_login');
+        }
 
         $upcomingEvents = $eventManager->getUserEvents($user, 'upcoming');
         $pastEvents = $eventManager->getUserEvents($user, 'past');

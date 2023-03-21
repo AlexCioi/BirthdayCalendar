@@ -6,22 +6,26 @@
     <div class="container mt-5">
         <h2 class="d-flex justify-content-center mb-3">Please sign up</h2>
 
-        <div class="form-control w-50 m-auto">
-            <div class="d-flex mt-3">
-                <p class="me-2">Already have an account?</p>
-                <a href="/login"> Sign in </a>
-            </div>
-            {{ form_start(registrationForm) }}
-                {{ form_row(registrationForm.email) }}
-                {{ form_row(registrationForm.plainPassword, {
-                    label: 'Password'
-                }) }}
-                {{ form_row(registrationForm.agreeTerms) }}
+        <div class="row">
+            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 col-xl-6">
+                <div class="form-control mx-auto">
+                    <div class="d-flex mt-3">
+                        <p class="me-2">Already have an account?</p>
+                        <a href="/login"> Sign in </a>
+                    </div>
+                    {{ form_start(registrationForm) }}
+                        {{ form_row(registrationForm.email) }}
+                        {{ form_row(registrationForm.plainPassword, {
+                            label: 'Password'
+                        }) }}
+                        {{ form_row(registrationForm.agreeTerms) }}
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-secondary mb-3 w-25">Register</button>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-secondary mb-3 w-25">Register</button>
+                        </div>
+                    {{ form_end(registrationForm) }}
                 </div>
-            {{ form_end(registrationForm) }}
+            </div>
         </div>
     </div>
 {% endblock %}

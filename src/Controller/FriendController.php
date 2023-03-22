@@ -32,7 +32,7 @@ class FriendController extends AbstractController
 
         return $this->render('friend_creator/index.html.twig', [
             'form' => $form,
-            'friendType' => $friendType
+            'friendType' => $friendType,
         ]);
     }
 

@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container mx-auto mt-5 d-flex justify-content-end">
+    <div class="d-none"> {% block register %} {% endblock %}</div>
+    <div class="container-fluid mt-5 d-flex justify-content-end">
         <div class="row">
-            <div class="col-xs-10 col-sm-6 col-md-8 col-lg-8 col-xl-6">
+            <div class="col-sm-12 me-5">
                 <div class="border border-muted rounded">
                     <h4 class="text-center mt-3 mb-4">Events in the next 3 days</h4>
-                    <div class="overflow-scroll h-75">
+                    <div class="overflow-y-scroll h-75">
                         {% if isEmptyEvents %}
                             <h6 class="text-center"> No upcoming events in the short term... </h6>
                         {% else %}

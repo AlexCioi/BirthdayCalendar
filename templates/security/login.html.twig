@@ -3,10 +3,10 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <div class="d-none"> {% block register %} {% endblock %} </div>
+
     <form method="post">
         <div class="container">
-
+            <div class="d-none"> {% block register %} {% endblock %} </div>
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}

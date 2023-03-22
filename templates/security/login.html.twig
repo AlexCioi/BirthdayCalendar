@@ -3,6 +3,7 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
+    <div class="d-none"> {% block register %} {% endblock %} </div>
     <form method="post">
         <div class="container">
             {% if error %}

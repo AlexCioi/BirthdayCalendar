@@ -3,7 +3,7 @@
 {% block title %}Friends{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-2 d-none d-md-block p-0">
                 <a href="dashboard/events/add_event"></a>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-10">
+            <div class="col-10 mx-auto">
                 {% if isEmpty %}
                     <div class="text-center">
                         <h4 class="mt-5">There seems to be a problem! You don't have any friends.</h4> <br> <br>
@@ -37,8 +37,8 @@
                 {% endif %}
                 <div class="row">
                     {% for friend in friends %}
-                        <div class="col-sm-10 col-md-6 col-xl-4 mx-auto">
-                            <div class="card me-3">
+                        <div class="col-sm-12 col-md-6 col-xl-4">
+                            <div class="card mb-2">
                                 <div class="border border-2 border-muted rounded">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ friend.getFirstName() }}  {{ friend.getLastName() }}</h5>

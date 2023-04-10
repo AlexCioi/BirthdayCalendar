@@ -22,3 +22,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    my.hwi_oauth.user.provider.entity:
+        parent: hwi_oauth.user.provider.entity
+        arguments:
+            $class: ''
+            $properties:
+                '': ''

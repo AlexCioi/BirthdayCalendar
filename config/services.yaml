@@ -27,4 +27,4 @@ services:
         arguments:
             $class: ''
             $properties:
-                '': ''
+                google: googleID

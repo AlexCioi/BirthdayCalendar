@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Friend;
 use App\Form\FriendFormType;
-use App\Helpers\NotificationDateCalculator;
 use App\Service\FriendManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -12,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function PHPUnit\Framework\throwException;
 
 class FriendController extends AbstractController
 {

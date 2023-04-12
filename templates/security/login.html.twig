@@ -42,6 +42,9 @@
                             <p class="me-2">Don't have an account?</p>
                             <a href="/register"> Sign Up </a>
                         </div>
+                        <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}">
+                            <span>Login with Google</span>
+                        </a>
                     </div>
                     {#
                         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.

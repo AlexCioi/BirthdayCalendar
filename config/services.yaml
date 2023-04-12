@@ -25,6 +25,6 @@ services:
     my.hwi_oauth.user.provider.entity:
         parent: hwi_oauth.user.provider.entity
         arguments:
-            $class: ''
+            $class: 'App\Entity\User'
             $properties:
                 google: googleID

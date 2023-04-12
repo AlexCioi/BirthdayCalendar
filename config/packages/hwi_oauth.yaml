@@ -8,4 +8,9 @@ hwi_oauth:
             type:                google
             client_id:           '%env(GOOGLE_ID)%'
             client_secret:       '%env(GOOGLE_SECRET)%'
-            scope:               "https://www.googleapis.com/auth/calendar"
+            scope:               "email profile https://www.googleapis.com/auth/calendar"
+            options:
+                access_type: offline
+                prompt: consent
+            paths:
+                email:          email

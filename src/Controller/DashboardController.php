@@ -5,13 +5,15 @@ namespace App\Controller;
 use App\Entity\Event;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'dashboard')]
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine, Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -21,6 +23,7 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        dd($this->container->get('security.token_storage'));
 
         $eventRepo = $doctrine->getRepository(Event::class);
         $qb = $eventRepo->getQb();

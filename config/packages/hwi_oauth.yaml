@@ -1,8 +1,12 @@
 hwi_oauth:
     # list of names of the firewalls in which this bundle is active, this setting MUST be set
     firewall_names: [main]
+    connect:
+        confirmation: true # should show confirmation page or not
+        account_connector: App\Service\SocialConnector
+        registration_form:    App\Form\RegistrationFormType
+        registration_form_handler: App\Form\Handler\SocialRegistrationFormHandler
 
-    # https://github.com/hwi/HWIOAuthBundle/blob/master/Resources/doc/2-configuring_resource_owners.md
     resource_owners:
         google:
             type:                google

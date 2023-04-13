@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
+
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'dashboard')]
@@ -23,7 +26,7 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        dd($this->container->get('security.token_storage'));
+        // dd($this->container->get('security.token_storage'));
 
         $eventRepo = $doctrine->getRepository(Event::class);
         $qb = $eventRepo->getQb();

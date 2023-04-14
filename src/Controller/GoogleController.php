@@ -7,7 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GoogleController extends AbstractController
 {
-//    #[Route('/login/check-google', name: 'api_login')]
+//    #[Route('/connect/service/google?key={key}', name: 'api_login')]
 //    public function getData() {
 //
 //    }

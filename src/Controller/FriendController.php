@@ -2,15 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Friend;
 use App\Form\FriendFormType;
 use App\Service\FriendManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Google\Client;
+use Google\Service\Calendar;
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class FriendController extends AbstractController
 {
@@ -83,6 +88,53 @@ class FriendController extends AbstractController
     {
         $entityManager->remove($friend);
         $entityManager->flush();
+
+        return $this->redirectToRoute('app_friends');
+    }
+
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    #[Route('/dashboard/friends/push/{id}', name:'friend_push')]
+    public function pushToGoogle(ManagerRegistry $doctrine, Request $request, int $id): Response
+    {
+        $token = $this->tokenStorage->getToken();
+        if ($token instanceof OAuthToken) {
+            $accessToken = $token->getAccessToken();
+        }
+
+        $client = new Client();
+        $client->setAccessToken($accessToken);
+
+        $service = new Calendar($client);
+
+        $entityManager = $doctrine->getManager();
+        $friend = $entityManager->getRepository(Friend::class)->find($id);
+
+        $friendBirthday = $friend->getNotificationDate();
+        $friendBirthday->add(new \DateInterval('P'.$friend->getNotificationOffset().'D'));
+        $friendBirthday = $friendBirthday->format('Y-m-d').'T00:00:00';
+
+        $friendName = $friend->getFirstName().' '.$friend->getLastName();
+
+        $googleEvent = new \Google_Service_Calendar_Event([
+            'summary' => $friendName.'\'s birthday!',
+            'start' => [
+                'dateTime' => $friendBirthday,
+                'timeZone' => 'Europe/Bucharest',
+            ],
+            'end' => [
+                'dateTime' => $friendBirthday,
+                'timeZone' => 'Europe/Bucharest',
+            ],
+        ]);
+
+        $calendarId = 'primary';
+        $googleEvent = $service->events->insert($calendarId, $googleEvent);
 
         return $this->redirectToRoute('app_friends');
     }

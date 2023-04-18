@@ -8,10 +8,14 @@ use App\Service\EventManager;
 use App\Service\FriendManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Google\Client;
+use Google\Service\Calendar;
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EventController extends AbstractController
 {
@@ -92,6 +96,57 @@ class EventController extends AbstractController
     {
         $entityManager->remove($event);
         $entityManager->flush();
+
+        return $this->redirectToRoute('app_event');
+    }
+
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    #[Route('/dashboard/events/push/{id}', name:'event_push')]
+    public function pushToGoogle(ManagerRegistry $doctrine, Request $request, int $id): Response
+    {
+        $token = $this->tokenStorage->getToken();
+        if ($token instanceof OAuthToken) {
+            $accessToken = $token->getAccessToken();
+        }
+
+        $client = new Client();
+        $client->setAccessToken($accessToken);
+
+        $service = new Calendar($client);
+
+        $entityManager = $doctrine->getManager();
+        $event = $entityManager->getRepository(Event::class)->find($id);
+
+
+
+
+        $eventDate = $event->getDueDate()->format('Y-m-d').'T00:00:00';
+        $eventName = $event->getName();
+        $eventDescription = $event->getDescription();
+
+        //dd($eventDate);
+
+        $googleEvent = new \Google_Service_Calendar_Event([
+            'summary' => $eventName,
+            'description' => $eventDescription,
+            'start' => [
+                'dateTime' => $eventDate,
+                'timeZone' => 'Europe/Bucharest',
+            ],
+            'end' => [
+                'dateTime' => $eventDate,
+                'timeZone' => 'Europe/Bucharest',
+            ],
+        ]);
+
+        $calendarId = 'primary';
+        $googleEvent = $service->events->insert($calendarId, $googleEvent);
 
         return $this->redirectToRoute('app_event');
     }

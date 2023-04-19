@@ -20,7 +20,16 @@ class EventSubscriber implements EventSubscriberInterface
 
     public function processEvent(FilterUserResponseEvent $event)
     {
+        $session = $event->getRequest()->getSession();
 
-        dd($event);
+        $sessionKey = '_hwi_oauth.connect_confirmation.';
+        foreach($_SESSION['_sf2_attributes'] as $key => $value) {
+            if(strpos($key, $sessionKey) === 0) {
+                $accessToken = $value['access_token'];
+                break;
+            }
+        }
+
+        dd($accessToken);
     }
 }

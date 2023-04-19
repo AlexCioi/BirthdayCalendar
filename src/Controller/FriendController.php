@@ -115,11 +115,12 @@ class FriendController extends AbstractController
         $entityManager = $doctrine->getManager();
         $friend = $entityManager->getRepository(Friend::class)->find($id);
 
-        $friendBirthday = $friend->getNotificationDate();
-        $friendBirthday->add(new \DateInterval('P'.$friend->getNotificationOffset().'D'));
-        $friendBirthday = $friendBirthday->format('Y-m-d').'T00:00:00';
+        $friendBirthday = $friend->getNotificationDate()
+                ->add(new \DateInterval('P'.$friend->getNotificationOffset().'D'))
+                ->format('Y-m-d').'T00:00:00';
 
-        $friendName = $friend->getFirstName().' '.$friend->getLastName();
+        $friendName = $friend->getFirstName().' '.
+                      $friend->getLastName();
 
         $googleEvent = new \Google_Service_Calendar_Event([
             'summary' => $friendName.'\'s birthday!',
@@ -131,10 +132,13 @@ class FriendController extends AbstractController
                 'dateTime' => $friendBirthday,
                 'timeZone' => 'Europe/Bucharest',
             ],
+            'recurrence' => array(
+                'RRULE:FREQ=YEARLY;UNTIL=20300101T000000Z'
+            ),
         ]);
 
         $calendarId = 'primary';
-        $googleEvent = $service->events->insert($calendarId, $googleEvent);
+        $service->events->insert($calendarId, $googleEvent);
 
         return $this->redirectToRoute('app_friends');
     }

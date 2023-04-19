@@ -25,7 +25,7 @@ class HWIUserProvider implements UserProviderInterface, OAuthAwareUserProviderIn
     /**
      * @var array<string, string>
      */
-    private array                                              $properties = [
+    private array             $properties = [
         'identifier' => 'id',
     ];
     protected PropertyAccessor $propertyAccessor;
@@ -100,19 +100,18 @@ class HWIUserProvider implements UserProviderInterface, OAuthAwareUserProviderIn
         }
 
         return $user;
-//        $resourceOwnerName = $response->getResourceOwner()
-//            ->getName();
-//
-//        if (!isset($this->properties[ $resourceOwnerName ])) {
-//            throw new \RuntimeException(sprintf("No property defined for entity for resource owner '%s'.", $resourceOwnerName));
-//        }
-//
-//        $username = method_exists($response, 'getUserIdentifier') ? $response->getUserIdentifier() : $response->getUsername();
-//        if (null === $user = $this->findUser([$this->properties[ $resourceOwnerName ] => $username])) {
-//            throw $this->createUserNotFoundException($username, sprintf("User '%s' not found.", $username));
-//        }
-//
-//        return $user;
+        $resourceOwnerName = $response->getResourceOwner()->getName();
+
+        if (!isset($this->properties[ $resourceOwnerName ])) {
+            throw new \RuntimeException(sprintf("No property defined for entity for resource owner '%s'.", $resourceOwnerName));
+        }
+
+        $username = method_exists($response, 'getUserIdentifier') ? $response->getUserIdentifier() : $response->getUsername();
+        if (null === $user = $this->findUser([$this->properties[ $resourceOwnerName ] => $username])) {
+            throw $this->createUserNotFoundException($username, sprintf("User '%s' not found.", $username));
+        }
+
+        return $user;
     }
 
     public function refreshUser(UserInterface $user): ?UserInterface

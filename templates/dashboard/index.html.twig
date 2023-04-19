@@ -27,9 +27,11 @@
                         {% endif %}
                     </div>
                 </div>
-                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}">
-                    <span>Login with Google</span>
-                </a>
+                {% if accessToken is null %}
+                    <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}">
+                        <span>Login with Google</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>

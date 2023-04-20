@@ -75,11 +75,8 @@ class DashboardController extends AbstractController
 
         if ($repo->findOneByGoogleId($qb, $responseGoogleId) !== null) {
             if ($replace === '') {
-                return $this->render('oauth_connect_consent/index.html.twig', []);
-            } else if ($replace === 'true') {
-                $this->getUser()->setGoogleId($responseGoogleId);
-                $entityManager->flush();
-            } else {
+                return $this->render('oauth_connect_consent/index.html.twig');
+            } else if ($replace === 'false') {
                 return $this->redirectToRoute('dashboard');
             }
         }

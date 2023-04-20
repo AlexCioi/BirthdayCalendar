@@ -2,12 +2,9 @@
 
 {% block body %}
     <body class="container">
-        <div class="mx-5">
-            <h5>The Google account you are trying to use is currently linked to another existing account. <br> Do you want to replace it?</h5>
-            <div class="d-flex">
-                <a href="{{ path('google-connect', {'replace': 'true'}) }}" class="btn btn-danger btn-sm me-2">Yes</a>
-                <a href="{{ path('google-connect', {'replace': 'false'}) }}" class="btn btn-secondary btn-sm">No</a>
-            </div>
+        <div class="mx-5 d-flex">
+            <h5 class="mt-1">Unable to connect because the Google account you are trying to use is currently linked to another existing account.</h5>
+            <a href="{{ path('google-connect', {'replace': 'false'}) }}" class="btn btn-secondary btn-sm ms-2">Ok</a>
         </div>
     </body>
 {% endblock %}

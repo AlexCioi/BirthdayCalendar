@@ -28,3 +28,10 @@ services:
             $class: 'App\Entity\User'
             $properties:
                 google: googleID
+
+#    Symfony\Component\HttpFoundation\Session\SessionInterface: '@session'
+#    session:
+#        class: App\EventSubscriber\EventSubscriber
+#       arguments:
+#            - '@session.storage.factory.native'
+#            - { cookie_secure: auto }

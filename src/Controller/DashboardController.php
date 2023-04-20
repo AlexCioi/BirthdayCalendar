@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
+use MongoDB\Driver\Manager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,14 +16,16 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DashboardController extends AbstractController
 {
-    private $tokenStorage;
+    private $tokenStorage, $session;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(TokenStorageInterface $tokenStorage, \SessionHandlerInterface $session)
     {
         $this->tokenStorage = $tokenStorage;
+        $this->session = $session;
     }
 
     #[Route('/dashboard', name: 'dashboard')]
@@ -55,5 +60,42 @@ class DashboardController extends AbstractController
             'isEmptyEvents' => $isEmptyEvents,
             'accessToken' => $accessToken
         ]);
+    }
+
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/dashboard/google-connect/{replace}', name: 'google-connect', requirements: ['replace' => '\w+'])]
+    public function googleConnect(Request $request, EntityManagerInterface $entityManager, ManagerRegistry $doctrine, string $replace = ''): Response
+    {
+        $responseGoogleId = $this->session->read('googleId');
+        $userGoogleId = $this->getUser()->getGoogleId();
+
+        $repo = $doctrine->getRepository(User::class);
+        $qb = $repo->getQb();
+
+
+        if ($repo->findOneByGoogleId($qb, $responseGoogleId) !== null) {
+            if ($replace === '') {
+                return $this->render('oauth_connect_consent/index.html.twig', []);
+            } else if ($replace === 'true') {
+                $this->getUser()->setGoogleId($responseGoogleId);
+                $entityManager->flush();
+            } else {
+                return $this->redirectToRoute('dashboard');
+            }
+        }
+
+        if ($userGoogleId === null) {
+            $this->getUser()->setGoogleId($responseGoogleId);
+            $entityManager->flush();
+
+            //return $this->redirectToRoute('app_logout');
+        }
+
+
+
+
+        return new Response(
+
+        );
     }
 }

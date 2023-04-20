@@ -123,9 +123,6 @@ class EventController extends AbstractController
         $entityManager = $doctrine->getManager();
         $event = $entityManager->getRepository(Event::class)->find($id);
 
-
-
-
         $eventDate = $event->getDueDate()->format('Y-m-d').'T00:00:00';
         $eventName = $event->getName();
         $eventDescription = $event->getDescription();

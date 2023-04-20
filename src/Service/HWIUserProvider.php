@@ -80,9 +80,21 @@ class HWIUserProvider implements UserProviderInterface, OAuthAwareUserProviderIn
 
         // try by email
         if (null === $user && $response->getEmail()) {
+
             $user = $repo->findOneBy([
                 'email' => $response->getEmail()
             ]);
+
+            if ($user === null) {
+                //dd($response->getData());
+                $user = new User();
+                $user->setEmail($response->getEmail());
+                $user->setGoogleID($response->getData()['id']);
+
+                $this->em->persist($user);
+                $this->em->flush();
+                //dd($user);
+            }
 
             if ($user) {
                 // FIX: need to set googleId
@@ -95,6 +107,8 @@ class HWIUserProvider implements UserProviderInterface, OAuthAwareUserProviderIn
                 $this->em->flush();
             }
         }
+
+
 
         if (null === $user) {
             throw new AccountNotLinkedException(sprintf("User '%s' not found.", $username));

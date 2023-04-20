@@ -17,6 +17,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
+use function PHPUnit\Framework\isEmpty;
 
 class DashboardController extends AbstractController
 {
@@ -72,8 +74,10 @@ class DashboardController extends AbstractController
         $repo = $doctrine->getRepository(User::class);
         $qb = $repo->getQb();
 
+        $repo->findOneByGoogleId($qb, $responseGoogleId);
 
-        if ($repo->findOneByGoogleId($qb, $responseGoogleId) !== null) {
+        //dd(count($qb->getQuery()->getResult()));
+        if (count($qb->getQuery()->getResult()) !== 0) {
             if ($replace === '') {
                 return $this->render('oauth_connect_consent/index.html.twig');
             } else if ($replace === 'false') {
@@ -87,9 +91,6 @@ class DashboardController extends AbstractController
 
             //return $this->redirectToRoute('app_logout');
         }
-
-
-
 
         return new Response(
 

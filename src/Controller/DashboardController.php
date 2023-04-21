@@ -89,7 +89,7 @@ class DashboardController extends AbstractController
             $this->getUser()->setGoogleId($responseGoogleId);
             $entityManager->flush();
 
-            //return $this->redirectToRoute('app_logout');
+            return $this->redirectToRoute('app_logout');
         }
 
         return new Response(

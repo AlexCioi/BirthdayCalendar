@@ -88,6 +88,7 @@ class HWIUserProvider implements UserProviderInterface, OAuthAwareUserProviderIn
             if ($user === null) {
                 //dd($response->getData());
                 $user = new User();
+                $user->setUsername($response->getEmail());
                 $user->setEmail($response->getEmail());
                 $user->setGoogleID($response->getData()['id']);
 

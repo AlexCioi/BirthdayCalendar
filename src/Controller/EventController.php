@@ -40,7 +40,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/dashboard/events', name: 'app_event')]
+    #[Route('/dashboard/events', name: 'app_events')]
     public function read(ManagerRegistry $doctrine, EventManager $eventManager, FriendManager $friendManager): Response
     {
         if ($this->getUser() !== NULL) {

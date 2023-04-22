@@ -37,6 +37,14 @@ class AccountController extends AbstractController
             $em->flush();
 
             return $this->redirectToRoute('app_account');
+        } else {
+            $key = '#'.strval($user->getId()).'#';
+            $user->setGoogleID($key.$user->getGoogleId());
+            $user->setUsername(str_replace('@', $key, $user->getUsername()));
+            $user->setEmail($user->getUsername());
+            $em->flush();
+
+            return $this->redirectToRoute('app_logout');
         }
 
 

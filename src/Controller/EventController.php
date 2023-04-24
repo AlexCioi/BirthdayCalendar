@@ -138,7 +138,14 @@ class EventController extends AbstractController
         $eventName = $event->getName();
         $eventDescription = $event->getDescription();
 
-        //dd($eventDate);
+        $attendees = $event->getAttendees();
+        $data['result'] = [];
+
+        if (count($attendees) > 0) {
+            foreach ($attendees as $attendee)
+                $finalAttendees[] = ['email' => $attendee];
+            $data['result'] = $finalAttendees;
+        }
 
         $googleEvent = new \Google_Service_Calendar_Event([
             'summary' => $eventName,
@@ -151,10 +158,13 @@ class EventController extends AbstractController
                 'dateTime' => $eventDate,
                 'timeZone' => 'Europe/Bucharest',
             ],
+            'attendees' => $data['result'],
         ]);
 
+        //dd($googleEvent->getAttendees());
+
         $calendarId = 'primary';
-        $googleEvent = $service->events->insert($calendarId, $googleEvent);
+        $service->events->insert($calendarId, $googleEvent);
 
         return $this->redirectToRoute('app_events');
     }

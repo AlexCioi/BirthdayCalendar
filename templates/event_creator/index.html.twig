@@ -14,7 +14,7 @@
                     {{ form_row(eventForm.name) }}
                     {{ form_row(eventForm.dueDate) }}
                     {{ form_row(eventForm.description) }}
-                    <div class="d-flex">
+                    <div class="d-flex mb-1">
                         {{ form_row(eventForm.attendees, {
                             label: 'Attendees'
                         }) }}
@@ -71,8 +71,8 @@
 
                     document
                         .querySelectorAll('ul.tags li')
-                        .forEach((emails) => {
-                            addTagFormDeleteLink(emails)
+                        .forEach((attendees) => {
+                            addTagFormDeleteLink(attendees)
                         })
 
                 </script>

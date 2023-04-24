@@ -5,8 +5,10 @@ namespace App\Form;
 use App\Entity\Event;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,6 +38,18 @@ class EventFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Something to remember later...'
                 ]
+            ])
+//            ->add('attendees', CollectionType::class, [
+//                'entry_type' => AttendeeFormType::class,
+//                'allow_add' => true,
+//                'allow_delete' => true,
+//                'by_reference' => false,
+//            ])
+            ->add('attendees', CollectionType::class, [
+                'entry_type' => EmailType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
             ])
             ->add('create', SubmitType::class, [
                 'label' => 'Schedule event',

@@ -29,13 +29,23 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($eventManager->processEventForm($form, $user, $event, 'create')) {
-            return $this->redirectToRoute('app_event');
+            $emails = array();
+
+//            $iterator = 0;
+//            foreach($form->getData()->getAttendees()->toArray() as $email) {
+//                array_push($emails, $email->getEmail());
+//                $iterator++;
+//            }
+
+            //dd($event->getAttendees());
+            return $this->redirectToRoute('app_events');
         }
 
         $eventType = 'creator';
 
         return $this->render('event_creator/index.html.twig', [
             'form' => $form,
+            'eventForm' => $form->createView(),
             'eventType' => $eventType
         ]);
     }
@@ -80,13 +90,14 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($eventManager->processEventForm($form, '', $event, 'update')) {
-            return $this->redirectToRoute('app_event');
+            return $this->redirectToRoute('app_events');
         }
 
         $eventType = 'editor';
 
         return $this->render('event_creator/index.html.twig', [
             'form' => $form,
+            'eventForm' => $form->createView(),
             'eventType' => $eventType
         ]);
     }
@@ -97,7 +108,7 @@ class EventController extends AbstractController
         $entityManager->remove($event);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_event');
+        return $this->redirectToRoute('app_events');
     }
 
     private $tokenStorage;
@@ -145,6 +156,6 @@ class EventController extends AbstractController
         $calendarId = 'primary';
         $googleEvent = $service->events->insert($calendarId, $googleEvent);
 
-        return $this->redirectToRoute('app_event');
+        return $this->redirectToRoute('app_events');
     }
 }

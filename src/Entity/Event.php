@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +28,9 @@ class Event
 
     #[ORM\Column(length: 30)]
     private ?string $user = null;
+
+    #[ORM\Column(type: Types::JSON)]
+    protected $attendees;
 
     public function getId(): ?int
     {
@@ -77,5 +83,25 @@ class Event
         $this->user = $user;
 
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->attendees = array();
+    }
+
+    public function setAttendees($attendees): void
+    {
+        $this->attendees = $attendees;
+    }
+
+    public function getAttendees(): ?array
+    {
+        return $this->attendees;
+    }
+
+    public function removeAttendee(Attendee $attendee): void
+    {
+        // ...
     }
 }

@@ -10,7 +10,72 @@
     <div class="row">
         <div class="col-sm-10 col-md-8 col-lg-6 col-xl-4 mx-auto">
             <div class="container form-control mt-2">
-                {{ form(form) }}
+                {{ form_start(eventForm) }}
+                    {{ form_row(eventForm.name) }}
+                    {{ form_row(eventForm.dueDate) }}
+                    {{ form_row(eventForm.description) }}
+                    <div class="d-flex">
+                        {{ form_row(eventForm.attendees, {
+                            label: 'Attendees'
+                        }) }}
+                        <button type="button" class="add_item_link btn btn-sm btn-secondary ms-2"
+                                data-collection-holder-class="attendees">add</button>
+                    </div>
+                    <ul class="attendees ps-0"
+                        data-index="{{ form.attendees|length > 0 ? form.attendees|last.vars.name + 1 : 0 }}"
+                        data-prototype="{{ form_widget(form.attendees.vars.prototype)|e('html_attr') }}"
+                    ></ul>
+                {{ form_end(eventForm) }}
+
+                <script>
+                    const addTagFormDeleteLink = (item) => {
+                        const removeFormButton = document.createElement('button');
+                        removeFormButton.classList.add('btn', 'btn-secondary', 'btn-sm')
+                        removeFormButton.innerText = 'Remove';
+
+                        item.append(removeFormButton);
+
+                        removeFormButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            // remove the li for the tag form
+                            item.remove();
+                        });
+                    }
+
+                    const addFormToCollection = (e) => {
+                        const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+                        const item = document.createElement('li');
+                        item.classList.add('d-flex', 'ms-0', 'mb-1')
+
+                        item.innerHTML = collectionHolder
+                            .dataset
+                            .prototype
+                            .replace(
+                                /__name__/g,
+                                collectionHolder.dataset.index
+                            );
+
+                        collectionHolder.appendChild(item);
+
+                        collectionHolder.dataset.index++;
+
+                        addTagFormDeleteLink(item);
+                    };
+
+                    document
+                        .querySelectorAll('.add_item_link')
+                        .forEach(btn => {
+                            btn.addEventListener("click", addFormToCollection)
+                        });
+
+                    document
+                        .querySelectorAll('ul.tags li')
+                        .forEach((emails) => {
+                            addTagFormDeleteLink(emails)
+                        })
+
+                </script>
             </div>
         </div>
     </div>

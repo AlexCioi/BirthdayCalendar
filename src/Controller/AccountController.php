@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Service\EventManager;
+use App\Service\FriendManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AccountController extends AbstractController
 {
     #[Route('dashboard/account', name: 'app_account')]
-    public function accountOverview(): Response
+    public function accountOverview(FriendManager $friendManager, EventManager $eventManager): Response
     {
         $user = $this->getUser();
         $googleId = $user->getGoogleID();
@@ -21,8 +23,13 @@ class AccountController extends AbstractController
             $accountCreatedWithGoogle = null;
         }
 
+        $friends = $friendManager->getUserFriends($this->getUser()->getUserIdentifier());
+        $events = $eventManager->getUserEvents($this->getUser()->getUserIdentifier(), 'upcoming');
+
         return $this->render('account/index.html.twig', [
             'user' => $user->getUserIdentifier(),
+            'friends' => $friends,
+            'events' => $events,
             'googleId' => $googleId,
             'accountCreatedWithGoogle' => $accountCreatedWithGoogle,
         ]);

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\User;
+use App\Service\EventManager;
+use App\Service\FriendManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
@@ -25,7 +27,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard', name: 'dashboard')]
-    public function index(ManagerRegistry $doctrine, Request $request): Response
+    public function index(ManagerRegistry $doctrine, Request $request, FriendManager $friendManager, EventManager $eventManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -40,6 +42,9 @@ class DashboardController extends AbstractController
         $eventRepo->getShortTermUserEvents($qb, $user);
         $shortTermEvents = $qb->getQuery()->getResult();
 
+        $friends = $friendManager->getUserFriends($this->getUser()->getUserIdentifier());
+        $events = $eventManager->getUserEvents($this->getUser()->getUserIdentifier(), 'upcoming');
+
         $isEmptyEvents = 0;
         if (count($shortTermEvents) === 0) {
             $isEmptyEvents = 1;
@@ -52,7 +57,10 @@ class DashboardController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'events' => $shortTermEvents,
+            'user' => $this->getUser()->getUserIdentifier(),
+            'friends' => $friends,
+            'events' => $events,
+            'shortTermEvents' => $shortTermEvents,
             'isEmptyEvents' => $isEmptyEvents,
             'accessToken' => $accessToken
         ]);

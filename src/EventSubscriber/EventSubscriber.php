@@ -7,6 +7,9 @@ use HWI\Bundle\OAuthBundle\HWIOAuthEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use Symfony\Component\Mailer\Event\MessageEvent;
+use Symfony\Component\Mime\Email;
+
 class EventSubscriber implements EventSubscriberInterface
 {
     private $session;
@@ -23,6 +26,7 @@ class EventSubscriber implements EventSubscriberInterface
             HWIOAuthEvents::CONNECT_COMPLETED => [
                 ['processEvent', 0],
             ],
+            MessageEvent::class => 'onMessage'
         ];
     }
 
@@ -59,5 +63,18 @@ class EventSubscriber implements EventSubscriberInterface
 
         $redirectResponse = new RedirectResponse('/dashboard/google-connect');
         $event->setResponse($redirectResponse);
+    }
+
+    public function onMessage(MessageEvent $event): void
+    {
+        $message = $event->getMessage();
+        if (!$message instanceof Email) {
+            return;
+        }
+        // do something with the message (logging, ...)
+        dd($message);
+
+        // and/or add some Messenger stamps
+        //$event->addStamp(new SomeMessengerStamp());
     }
 }

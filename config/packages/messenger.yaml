@@ -5,12 +5,16 @@ framework:
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             async:
+                #serializer: messenger.transport.symfony_serializer
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 options:
                 retry_strategy:
                     max_retries: 3
                     multiplier: 2
+
             failed: 'doctrine://default?queue_name=failed'
+#                dsn: 'doctrine://default?queue_name=failed'
+#                serializer: messenger.transport.symfony_serializer
             # sync: 'sync://'
 
         routing:
@@ -20,3 +24,4 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
+            App\Message\EmailNotification: async

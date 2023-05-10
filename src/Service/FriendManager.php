@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Friend;
-use App\Form\FriendFormType;
 use App\Helpers\NotificationDateCalculator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;

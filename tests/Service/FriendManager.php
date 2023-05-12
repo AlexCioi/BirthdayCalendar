@@ -12,7 +12,6 @@ use Monolog\Test\TestCase;
 
 class FriendManager extends TestCase
 {
-
     public function testGetUserFriends()
     {
         // Set up test data
@@ -73,32 +72,5 @@ class FriendManager extends TestCase
 
         // Assert that the method returned the expected output
         $this->assertEquals($friends, $result);
-    }
-
-    public function testGetUserFriends2()
-    {
-        // create test user
-        $user = new User();
-        // ... set user properties
-
-        // create test friends
-        $friend1 = new Friend();
-        // ... set friend1 properties
-        $friend1->setUser('alexandru');
-        $this->entityManager->persist($friend1);
-
-        $friend2 = new Friend();
-        // ... set friend2 properties
-        $friend2->setUser('alexandru');
-        $this->entityManager->persist($friend2);
-
-        // flush changes to database
-        $this->entityManager->flush();
-
-        $friendManager = new FriendManager($this->doctrine, $this->entityManager);
-
-        $friends = $friendManager->getUserFriends($user);
-
-        $this->assertCount(2, $friends);
     }
 }

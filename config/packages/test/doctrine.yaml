@@ -1,0 +1,9 @@
+doctrine:
+    dbal:
+        connections:
+            default:
+                driver: pdo_sqlite
+                url: 'sqlite:///:memory:'
+    orm:
+        auto_generate_proxy_classes: true
+        auto_mapping: true

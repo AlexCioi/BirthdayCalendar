@@ -53,7 +53,5 @@ class AccountController extends AbstractController
 
             return $this->redirectToRoute('app_logout');
         }
-
-
     }
 }

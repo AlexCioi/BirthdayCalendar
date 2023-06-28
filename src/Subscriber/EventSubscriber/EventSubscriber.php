@@ -6,6 +6,8 @@ use HWI\Bundle\OAuthBundle\Event\FilterUserResponseEvent;
 use HWI\Bundle\OAuthBundle\HWIOAuthEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Mailer\Event\MessageEvent;
 use Symfony\Component\Mime\Email;
 
@@ -25,8 +27,27 @@ class EventSubscriber implements EventSubscriberInterface
             HWIOAuthEvents::CONNECT_COMPLETED => [
                 ['processEvent', 0],
             ],
-            MessageEvent::class => 'onMessage'
+            MessageEvent::class => 'onMessage',
+            KernelEvents::EXCEPTION => 'processException',
         ];
+    }
+
+    public function processException(ExceptionEvent $event)
+    {
+        //$exception = $event->getThrowable();
+
+        $html = '<html>
+                    <body>
+                        <h1> 
+                            Kernel exception listened successfully 
+                        </h1>
+                    </body>
+                 </html>';
+
+        $response = new \Symfony\Component\HttpFoundation\Response($html);
+        $response->headers->set('Content-Type', 'text/html');
+
+        $event->setResponse($response);
     }
 
     public function processEvent(FilterUserResponseEvent $event)

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace App\Subscriber\EventSubscriber;
 
 use HWI\Bundle\OAuthBundle\Event\FilterUserResponseEvent;
 use HWI\Bundle\OAuthBundle\HWIOAuthEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
 use Symfony\Component\Mailer\Event\MessageEvent;
 use Symfony\Component\Mime\Email;
 

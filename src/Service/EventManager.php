@@ -3,9 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Event;
-use App\Entity\Friend;
 use App\Helpers\CustomSorter;
-use App\Helpers\LocalTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 

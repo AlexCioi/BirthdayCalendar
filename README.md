@@ -1,0 +1,1 @@
+I built this project in order to solidify my knowledge of PHP with Symfony, i tried to implement as many concepts as possible: CRUD operations, OAuth with google, API calls, and general software design. Also for the front-end, it is a responsive design project.
